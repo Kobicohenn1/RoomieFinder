@@ -2,7 +2,7 @@
   "expo": {
     "name": "roomie_finder_app",
     "slug": "roomie_finder_app",
-    "scheme": "roomie_finder_app",
+    "scheme": "roomie-finder-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,11 +22,9 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
-    "plugins": [
-      "expo-router",
-      "expo-font"
-    ]
+    "plugins": ["expo-router", "expo-font"]
   }
 }

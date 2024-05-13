@@ -9,13 +9,13 @@ const TabIcon = ({ icon, color, name, focused }) => {
       <Image
         source={icon}
         resizeMode="contain"
-        tintColor={color}
+        //tintColor={color}
         style={{ width: 25, height: 25 }}
       />
       <Text
         style={{
           fontFamily: focused ? 'Poppins-Black' : 'Poppins-Regular',
-          color: color,
+          //color: color,
         }}
       >
         {name}
