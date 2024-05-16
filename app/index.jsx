@@ -35,9 +35,14 @@ export default function App() {
                 flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
-                paddingTop: 60,
+                paddingBottom: 80,
               }}
             >
+              <Image
+                source={images.logo}
+                resizeMode="contain"
+                style={{ width: 200, height: 200 }}
+              />
               <View>
                 <Text style={styles.text}>
                   Find Your Perfect Roomie, Find Your Perfect Home!

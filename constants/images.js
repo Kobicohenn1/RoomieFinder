@@ -6,6 +6,8 @@ import logo from '../assets/images/logo.png';
 import logoSmall from '../assets/images/logo-small.png';
 import empty from '../assets/images/empty.png';
 import opening from '../assets/images/opening.png';
+import background from '../assets/images/background.png';
+import signin from '../assets/images/signin.png';
 
 export default {
   profile,
@@ -16,4 +18,6 @@ export default {
   logoSmall,
   empty,
   opening,
+  background,
+  signin,
 };
