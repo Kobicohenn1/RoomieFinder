@@ -7,9 +7,11 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
 import { images } from '../../constants';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
@@ -24,7 +26,27 @@ const SignUp = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submit = () => {};
+  const submit = async () => {
+    if (!form.username || !form.email || !form.password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post(
+        'http://192.168.50.234:3500/api/register',
+        form
+      );
+      Alert.alert('Success', response.data.msg);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to register');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <LinearGradient
@@ -59,11 +81,15 @@ const SignUp = () => {
               handleChangeText={(e) => setForm({ ...form, password: e })}
               placeholder={'Password'}
             />
-            <CustomButton title="Sign In" handlePress={submit} />
+            <CustomButton
+              title="Sign Up"
+              handlePress={submit}
+              disabled={isSubmitting}
+            />
             <View style={styles.haveAccountContainer}>
               <Text style={styles.haveAccountText}>Don't have an account?</Text>
-              <Link href="/sign-up" style={styles.signUp}>
-                Sign Up
+              <Link href="/sign-in" style={styles.signUp}>
+                Sign In
               </Link>
             </View>
           </View>
@@ -103,7 +129,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-SemiBold',
     fontSize: 20,
     paddingRight: 8,
-    //fontStyle: 'bold',
   },
   signUp: {
     fontFamily: 'Poppins-SemiBold',
