@@ -4,7 +4,6 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const connectDB = require('./config/connectDB');
-const regRoutes = require('./routes/register'); // Correct path to register.js
 
 const PORT = process.env.PORT || 3500;
 const app = express();
@@ -16,6 +15,8 @@ app.use(express.json({ extended: false }));
 
 //Define the route
 app.use('/api', require('./routes/register'));
+app.use('/api', require('./routes/auth'));
+app.use('/api/users', require('./routes/user')); // Add this line
 
 mongoose.connection.once('open', () => {
   console.log('Connected To MongoDB');

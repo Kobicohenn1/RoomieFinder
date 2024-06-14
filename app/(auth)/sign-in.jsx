@@ -4,16 +4,17 @@ import {
   Text,
   ImageBackground,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
 import { images } from '../../constants';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignIn = () => {
   const [form, setForm] = useState({
@@ -22,8 +23,39 @@ const SignIn = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
-  const submit = () => {};
+  const submit = async () => {
+    if (!form.email || !form.password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post(
+        'http://192.168.10.10:3500/api/login', // Ensure this matches the server route
+        form
+      );
+
+      const { token, userId } = response.data; // Ensure your API returns the token and user ID
+      if (!token || !userId) {
+        throw new Error('Token or user ID is missing in the response');
+      }
+
+      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('userId', userId);
+
+      Alert.alert('Success', 'Logged in successfully');
+      router.push('/home'); // Navigate to the home screen
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', error.message || 'Failed to log in');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <LinearGradient
@@ -51,8 +83,13 @@ const SignIn = () => {
               value={form.password}
               handleChangeText={(e) => setForm({ ...form, password: e })}
               placeholder={'Password'}
+              secureTextEntry
             />
-            <CustomButton title="Sign In" handlePress={submit} />
+            <CustomButton
+              title="Sign In"
+              handlePress={submit}
+              disabled={isSubmitting}
+            />
             <View style={styles.haveAccountContainer}>
               <Text style={styles.haveAccountText}>Don't have an account?</Text>
               <Link href="/sign-up" style={styles.signUp}>
@@ -96,7 +133,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-SemiBold',
     fontSize: 20,
     paddingRight: 8,
-    //fontStyle: 'bold',
   },
   signUp: {
     fontFamily: 'Poppins-SemiBold',

@@ -1,5 +1,7 @@
 const User = require('../model/User');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const validator = require('validator');
 
 const handleNewUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -11,31 +13,48 @@ const handleNewUser = async (req, res) => {
       .json({ msg: 'Please provide username, email, and password' });
   }
 
+  // Validate email format
+  if (!validator.isEmail(email)) {
+    return res.status(400).json({ msg: 'Invalid email format' });
+  }
+
   try {
     // Check if user already exists
-    let user = await User.findOne({ email });
-    if (user) {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({ msg: 'User already exists' });
     }
 
-    // Create a new user instance
-    user = new User({
+    // Encrypt the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create and save the new user
+    const newUser = new User({
       username,
       email,
-      password,
+      password: hashedPassword,
     });
 
-    // Encrypt the password
-    const hashedPwd = await bcrypt.hash(password, 10);
-    user.password = hashedPwd;
+    await newUser.save();
 
-    // Save the user to the database
-    await user.save();
+    // Generate JWT token
+    const payload = {
+      user: {
+        id: newUser.id,
+      },
+    };
 
-    // Return success response
-    res.status(201).json({ msg: 'User registered successfully' });
+    jwt.sign(
+      payload,
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: '1h' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token, userId: newUser.id });
+      }
+    );
   } catch (error) {
-    console.error(error.message);
+    console.error('Error registering user:', error.message);
     res.status(500).json({ msg: 'Server error' });
   }
 };

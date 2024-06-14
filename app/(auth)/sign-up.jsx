@@ -4,7 +4,6 @@ import {
   Text,
   ImageBackground,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   Alert,
@@ -15,7 +14,7 @@ import axios from 'axios';
 import { images } from '../../constants';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -25,6 +24,7 @@ const SignUp = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const submit = async () => {
     if (!form.username || !form.email || !form.password) {
@@ -36,10 +36,14 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(
-        'http://192.168.50.234:3500/api/register',
+        'http://192.168.10.10:3500/api/register',
         form
       );
       Alert.alert('Success', response.data.msg);
+      // Redirect to sign-in screen
+      setTimeout(() => {
+        router.push('/sign-in');
+      }, 1000);
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'Failed to register');
@@ -80,6 +84,7 @@ const SignUp = () => {
               value={form.password}
               handleChangeText={(e) => setForm({ ...form, password: e })}
               placeholder={'Password'}
+              secureTextEntry
             />
             <CustomButton
               title="Sign Up"
@@ -87,10 +92,12 @@ const SignUp = () => {
               disabled={isSubmitting}
             />
             <View style={styles.haveAccountContainer}>
-              <Text style={styles.haveAccountText}>Don't have an account?</Text>
-              <Link href="/sign-in" style={styles.signUp}>
-                Sign In
-              </Link>
+              <Text style={styles.haveAccountText}>
+                Already have an account?
+              </Text>
+              <TouchableOpacity onPress={() => router.push('/sign-in')}>
+                <Text style={styles.signUp}>Sign In</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
