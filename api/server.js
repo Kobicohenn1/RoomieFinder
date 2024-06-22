@@ -1,9 +1,10 @@
 require('dotenv').config();
-// config will read .env file, parse the contents, assign it to process.env, and return an Object with a parsed key containing the loaded content or an error key if it failed.
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const mongoose = require('mongoose');
 const connectDB = require('./config/connectDB');
+const morgan = require('morgan');
 
 const PORT = process.env.PORT || 3500;
 const app = express();
@@ -11,12 +12,14 @@ const app = express();
 connectDB();
 
 app.use(cors());
-app.use(express.json({ extended: false }));
+app.use(morgan('dev'));
+app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-//Define the route
 app.use('/api', require('./routes/register'));
 app.use('/api', require('./routes/auth'));
-app.use('/api/users', require('./routes/user')); // Add this line
+app.use('/api/users', require('./routes/user'));
+app.use('/api/profile', require('./routes/profile'));
 
 mongoose.connection.once('open', () => {
   console.log('Connected To MongoDB');

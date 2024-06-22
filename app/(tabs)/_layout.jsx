@@ -9,13 +9,11 @@ const TabIcon = ({ icon, color, name, focused }) => {
       <Image
         source={icon}
         resizeMode="contain"
-        //tintColor={color}
         style={{ width: 25, height: 25 }}
       />
       <Text
         style={{
           fontFamily: focused ? 'Poppins-Black' : 'Poppins-Regular',
-          //color: color,
         }}
       >
         {name}
@@ -56,7 +54,6 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'profile',
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <TabIcon
