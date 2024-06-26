@@ -30,7 +30,7 @@ const UserSchema = new Schema(
     },
     profileImageUrl: {
       type: String,
-      default: 'https://via.placeholder.com/150', // Default placeholder image
+      default: '/uploads/placeholder-profile.jpeg',
     },
     memberSince: {
       type: Date,
@@ -38,28 +38,38 @@ const UserSchema = new Schema(
     },
     gender: {
       type: String,
-      enum: ['Male', 'Female', 'Other'],
+      enum: ['Female', 'Male', 'Non-binary'],
     },
-    location: {
+    occupation: {
       type: String,
+      enum: ['Study', 'Work', 'Both'],
     },
-    socialTraits: {
+    personality: {
       type: String,
-      enum: ['Extrovert', 'Introvert', 'Ambivert'],
+      enum: ['Introvert', 'Extrovert', 'Ambivert'],
+      default: 'Ambivert',
     },
-    foodPreferences: {
+    lifestyle: {
       type: String,
-      enum: ['Veg', 'Non-Veg', 'Vegan'],
+      enum: ['Active', 'Relaxed', 'Balanced'],
+      default: 'Balanced',
     },
-    hobbies: {
+    introduceYourself: {
+      type: String,
+      default: 'k',
+    },
+    music: {
       type: [String],
+      default: [], // An array of strings representing music genres
     },
-    // reviews: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Review',
-    //   },
-    // ],
+    sports: {
+      type: [String],
+      default: [], // An array of strings representing sports interests
+    },
+    movieGenres: {
+      type: [String],
+      default: [], // An array of strings representing preferred movie genres
+    },
   },
   { timestamps: true }
 );

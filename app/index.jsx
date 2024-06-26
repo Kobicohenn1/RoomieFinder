@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
@@ -18,8 +19,19 @@ import { Redirect, router } from 'expo-router';
 import { images } from '../constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import CustomButton from '../components/CustomButton';
+import LogoAnimation from '../components/LogoAnimation';
 
 export default function App() {
+  const [animationCompleted, setAnimationCompleted] = useState(false);
+
+  const handleAnimationEnd = () => {
+    setAnimationCompleted(true);
+  };
+
+  if (!animationCompleted) {
+    return <LogoAnimation onAnimationEnd={handleAnimationEnd} />;
+  }
+
   return (
     <LinearGradient
       colors={['#B7B8B0', '#9C9791', '#9B8669', '#82663F']}

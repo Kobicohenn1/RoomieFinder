@@ -20,6 +20,7 @@ app.use('/api', require('./routes/register'));
 app.use('/api', require('./routes/auth'));
 app.use('/api/users', require('./routes/user'));
 app.use('/api/profile', require('./routes/profile'));
+app.use('/api/profile', require('./routes/update-profile'));
 
 mongoose.connection.once('open', () => {
   console.log('Connected To MongoDB');

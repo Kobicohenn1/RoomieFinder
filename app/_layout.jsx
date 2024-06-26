@@ -3,6 +3,7 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { images } from '../constants';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -22,6 +23,7 @@ const RootLayout = () => {
 
   useEffect(() => {
     if (error) throw error;
+
     if (fontsLoaded) SplashScreen.hideAsync();
   }, [fontsLoaded, error]);
 

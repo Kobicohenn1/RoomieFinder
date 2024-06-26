@@ -116,7 +116,7 @@ const ProfileScreen = () => {
   };
 
   const handleEditProfile = () => {
-    router.push('../../components/EditProfile');
+    router.push('/profile/editProfile');
   };
 
   if (loading) {
