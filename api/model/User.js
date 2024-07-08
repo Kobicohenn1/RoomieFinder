@@ -6,7 +6,6 @@ const UserSchema = new Schema(
     username: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
       maxlength: 25,
     },
@@ -56,7 +55,7 @@ const UserSchema = new Schema(
     },
     introduceYourself: {
       type: String,
-      default: 'k',
+      default: '',
     },
     music: {
       type: [String],
@@ -69,6 +68,9 @@ const UserSchema = new Schema(
     movieGenres: {
       type: [String],
       default: [], // An array of strings representing preferred movie genres
+    },
+    city: {
+      type: String,
     },
   },
   { timestamps: true }

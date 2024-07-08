@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
 
 const options = {
   gender: ['Female', 'Male', 'Non-binary'],
@@ -30,6 +32,31 @@ const options = {
   movieGenres: ['Action', 'Comedy', 'Drama', 'Sci-Fi', 'Thriller', 'Romance'],
 };
 
+const ages = Array.from({ length: 83 }, (_, i) => i + 18);
+
+const cities = [
+  'Tel Aviv',
+  'Jerusalem',
+  'Haifa',
+  'Beersheba',
+  'Rishon LeZion',
+  'Petah Tikva',
+  'Ashdod',
+  'Netanya',
+  'Holon',
+  'Bnei Brak',
+  'Bat Yam',
+  'Kfar Saba',
+  'Herzliya',
+  'Ramat Gan',
+  'Ashkelon',
+  'Ra’anana',
+  'Hadera',
+  'Modiin',
+  'Nazareth',
+  'Ramla',
+];
+
 const EditProfileScreen = () => {
   const [profile, setProfile] = useState({
     gender: '',
@@ -39,7 +66,10 @@ const EditProfileScreen = () => {
     music: [],
     sports: [],
     movieGenres: [],
+    city: '',
+    age: '',
   });
+
   const [introduceYourself, setIntroduceYourself] = useState('');
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ success: '', error: '' });
@@ -67,6 +97,8 @@ const EditProfileScreen = () => {
           music: data.music || [],
           sports: data.sports || [],
           movieGenres: data.movieGenres || [],
+          city: data.city || '',
+          age: data.age || '',
         });
         setIntroduceYourself(data.introduceYourself || '');
       } catch (error) {
@@ -88,6 +120,8 @@ const EditProfileScreen = () => {
       music: profile.music,
       sports: profile.sports,
       movieGenres: profile.movieGenres,
+      city: profile.city,
+      age: profile.age,
     };
 
     console.log('Updates to be sent:', updates); // Log the updates object
@@ -200,6 +234,38 @@ const EditProfileScreen = () => {
               </View>
             </View>
           ))}
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>City</Text>
+            <Picker
+              selectedValue={profile.city}
+              onValueChange={(itemValue) =>
+                setProfile((prev) => ({ ...prev, city: itemValue }))
+              }
+            >
+              <Picker.Item label="Select a city" value="" />
+              {cities.map((city) => (
+                <Picker.Item key={city} label={city} value={city} />
+              ))}
+            </Picker>
+          </View>
+          <TouchableWithoutFeedback>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Age</Text>
+              <Picker
+                selectedValue={profile.age}
+                onValueChange={(itemValue) =>
+                  setProfile((prev) => ({ ...prev, age: itemValue }))
+                }
+              >
+                <Picker.Item label="Select a age" value="" />
+                {ages.map((age) => (
+                  <Picker.Item key={age} label={age} value={age} />
+                ))}
+              </Picker>
+            </View>
+          </TouchableWithoutFeedback>
+
           <Text style={styles.sectionTitle}>Introduce Yourself</Text>
           <TextInput
             style={styles.textArea}

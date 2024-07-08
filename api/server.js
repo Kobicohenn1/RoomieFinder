@@ -21,6 +21,7 @@ app.use('/api', require('./routes/auth'));
 app.use('/api/users', require('./routes/user'));
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/profile', require('./routes/update-profile'));
+app.use('/api', require('./routes/profiles')); // Corrected this line
 
 mongoose.connection.once('open', () => {
   console.log('Connected To MongoDB');

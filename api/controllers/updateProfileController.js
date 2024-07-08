@@ -37,6 +37,10 @@ exports.updateProfile = async (req, res) => {
     if (Array.isArray(updates.sports)) user.sports = updates.sports;
     if (Array.isArray(updates.movieGenres))
       user.movieGenres = updates.movieGenres;
+    if (updates.city !== undefined) {
+      user.city = updates.city;
+    }
+    if (updates.age !== undefined) user.age = updates.age;
 
     // Save the updated user profile
     await user.save();

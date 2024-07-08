@@ -8,6 +8,7 @@ import Animated, {
   withDelay,
 } from 'react-native-reanimated';
 import { View, StyleSheet, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { images } from '../constants'; // Make sure this path is correct
 
 const LogoAnimation = ({ onAnimationEnd }) => {
@@ -43,13 +44,16 @@ const LogoAnimation = ({ onAnimationEnd }) => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#B7B8B0', '#9C9791', '#9B8669', '#82663F']}
+      style={styles.container}
+    >
       <Animated.Image
         source={images.logo}
         style={[styles.image, animatedStyle]}
         resizeMode="contain"
       />
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -58,10 +62,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: 200,
-    backgroundColor: '#f5f5f5', // Background color (optional)
   },
   image: {
+    marginTop: 150,
     width: 200, // Slightly larger for emphasis
     height: 200,
   },
