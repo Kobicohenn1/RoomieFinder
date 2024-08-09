@@ -20,7 +20,7 @@ router.post(
         return res.status(404).json({ msg: 'User not found' });
       }
 
-      user.profileImageUrl = `/uploads/${req.file.filename}`;
+      user.profileImageUrl = `/uploads/profiles/${req.file.filename}`;
       await user.save();
 
       res.json({

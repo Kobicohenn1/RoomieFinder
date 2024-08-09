@@ -59,18 +59,26 @@ const UserSchema = new Schema(
     },
     music: {
       type: [String],
-      default: [], // An array of strings representing music genres
+      default: [],
     },
     sports: {
       type: [String],
-      default: [], // An array of strings representing sports interests
+      default: [],
     },
     movieGenres: {
       type: [String],
-      default: [], // An array of strings representing preferred movie genres
+      default: [],
     },
     city: {
       type: String,
+    },
+    hasApartment: {
+      type: Boolean,
+      default: false,
+    },
+    apartment: {
+      type: Schema.ObjectId,
+      ref: 'Apartment',
     },
   },
   { timestamps: true }

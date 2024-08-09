@@ -7,8 +7,8 @@ import {
   Touchable,
 } from 'react-native';
 import React from 'react';
-import imageProfile from '../api/uploads/profileImage-1719070305273.jpeg';
 import { LinearGradient } from 'expo-linear-gradient';
+import { icons } from '../constants';
 
 export const profileCardWidth = Dimensions.get('screen').width * 0.8;
 
@@ -28,9 +28,18 @@ const ProfileCard = ({ profile }) => {
       />
       <View style={styles.footer}>
         <Text style={styles.name}>
-          {profile.username}{profile.age ? ','+ profile.age : ''}
+          {profile.username}
+          {profile.age ? ',' + profile.age : ''}
         </Text>
-        <Text style={styles.city}>{profile.city}</Text>
+        <View style={styles.container}>
+          <Text style={styles.city}>{profile.city}</Text>
+          {profile.hasApartment ? (
+            <View style={styles.iconContainer}>
+              <Image style={styles.icon} source={icons.have_home} />
+              <Text style={styles.haveHomeText}>Have a home</Text>
+            </View>
+          ) : null}
+        </View>
       </View>
     </View>
   );
@@ -83,6 +92,22 @@ const styles = StyleSheet.create({
   city: {
     fontFamily: 'Poppins-Regular',
     color: 'gray',
+  },
+  icon: {
+    width: 25,
+    height: 25,
+  },
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  haveHomeText: {
+    marginLeft: 5,
   },
 });
 

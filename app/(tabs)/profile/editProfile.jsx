@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import { CITIES } from '../../../constants/cities';
 
 const options = {
   gender: ['Female', 'Male', 'Non-binary'],
@@ -34,29 +35,6 @@ const options = {
 
 const ages = Array.from({ length: 83 }, (_, i) => i + 18);
 
-const cities = [
-  'Tel Aviv',
-  'Jerusalem',
-  'Haifa',
-  'Beersheba',
-  'Rishon LeZion',
-  'Petah Tikva',
-  'Ashdod',
-  'Netanya',
-  'Holon',
-  'Bnei Brak',
-  'Bat Yam',
-  'Kfar Saba',
-  'Herzliya',
-  'Ramat Gan',
-  'Ashkelon',
-  'Ra’anana',
-  'Hadera',
-  'Modiin',
-  'Nazareth',
-  'Ramla',
-];
-
 const EditProfileScreen = () => {
   const [profile, setProfile] = useState({
     gender: '',
@@ -73,6 +51,7 @@ const EditProfileScreen = () => {
   const [introduceYourself, setIntroduceYourself] = useState('');
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ success: '', error: '' });
+  const [hasApartment, setHasApartment] = useState(0);
   const scrollViewRef = useRef();
   const router = useRouter();
 
@@ -244,27 +223,25 @@ const EditProfileScreen = () => {
               }
             >
               <Picker.Item label="Select a city" value="" />
-              {cities.map((city) => (
+              {CITIES.map((city) => (
                 <Picker.Item key={city} label={city} value={city} />
               ))}
             </Picker>
           </View>
-          <TouchableWithoutFeedback>
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Age</Text>
-              <Picker
-                selectedValue={profile.age}
-                onValueChange={(itemValue) =>
-                  setProfile((prev) => ({ ...prev, age: itemValue }))
-                }
-              >
-                <Picker.Item label="Select a age" value="" />
-                {ages.map((age) => (
-                  <Picker.Item key={age} label={age} value={age} />
-                ))}
-              </Picker>
-            </View>
-          </TouchableWithoutFeedback>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Age</Text>
+            <Picker
+              selectedValue={profile.age}
+              onValueChange={(itemValue) =>
+                setProfile((prev) => ({ ...prev, age: itemValue }))
+              }
+            >
+              <Picker.Item label="Select a age" value="" />
+              {ages.map((age) => (
+                <Picker.Item key={age} label={age} value={age} />
+              ))}
+            </Picker>
+          </View>
 
           <Text style={styles.sectionTitle}>Introduce Yourself</Text>
           <TextInput
@@ -314,7 +291,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   radioOption: {
-    backgroundColor: '#fff',
+    backgroundColor: '#E0E0E0',
     padding: 10,
     margin: 5,
     borderRadius: 5,
@@ -326,7 +303,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   option: {
-    backgroundColor: '#fff',
+    backgroundColor: '#E0E0E0',
     padding: 10,
     margin: 5,
     borderRadius: 5,
@@ -334,7 +311,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   optionSelected: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#fff',
   },
   optionText: {
     fontSize: 16,

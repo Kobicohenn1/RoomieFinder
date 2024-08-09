@@ -7,17 +7,24 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import ApartmentForm from '../../../components/ManageApartment/ApartmentForm';
 
 const ProfileScreen = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [hasApartment, setHasApartment] = useState(0);
+  const updates = {
+    hasApartmentUpdates: hasApartment === 1,
+  };
   const router = useRouter();
 
   useEffect(() => {
@@ -39,6 +46,7 @@ const ProfileScreen = () => {
           }
         );
         setUserData(response.data);
+        setHasApartment(response.data.hasApartment ? 1 : 0);
       } catch (error) {
         console.error('Error fetching user data:', error.message);
         Alert.alert('Error', 'Failed to fetch user data');
@@ -119,6 +127,40 @@ const ProfileScreen = () => {
     router.push('/profile/editProfile');
   };
 
+  const handleHasApartment = async (selectedIndex) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const userId = await AsyncStorage.getItem('userId');
+
+      if (!token || !userId) {
+        Alert.alert('Error', 'Auth Error');
+        return;
+      }
+
+      console.log(updates.hasApartmentUpdates);
+      const response = await axios.put(
+        `http://192.168.10.10:3500/api/profile/update-profile`,
+        { userId, updates },
+        {
+          headers: {
+            'x-auth-token': token,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setUserData({ ...userData, hasApartment: selectedIndex === 1 });
+        Alert.alert('Success', 'Apartment status updated successfully');
+      } else {
+        Alert.alert('Error', 'Failed to update apartment status');
+      }
+    } catch (error) {
+      console.error('error updating apartment status');
+      Alert.alert('Alert error updating apartment status');
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -137,65 +179,75 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>
-          {userData.name || userData.username}
-        </Text>
-        <TouchableOpacity
-          onPress={() =>
-            Alert.alert(
-              'Settings',
-              'Settings functionality will be implemented.'
-            )
-          }
-        >
-          <Text style={styles.settingsIcon}>⚙️</Text>
-        </TouchableOpacity>
-      </View>
-      <Image
-        source={{ uri: `http://192.168.10.10:3500${userData.profileImageUrl}` }}
-        style={styles.profileImage}
-        onError={(e) => {
-          console.error('Error loading image', e.nativeEvent.error);
-          Alert.alert('Error', 'Failed to load profile image');
-        }}
-        defaultSource={{ uri: 'https://via.placeholder.com/150' }} // Fallback image
-      />
-      {uploading && (
-        <View style={styles.uploadingContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
+      <ScrollView automaticallyAdjustKeyboardInsets={true}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>
+            {userData.name || userData.username}
+          </Text>
+          <TouchableOpacity
+            onPress={() =>
+              Alert.alert(
+                'Settings',
+                'Settings functionality will be implemented.'
+              )
+            }
+          >
+            <Text style={styles.settingsIcon}>⚙️</Text>
+          </TouchableOpacity>
         </View>
-      )}
-      <TouchableOpacity style={styles.cameraIconContainer} onPress={pickImage}>
-        <Text style={styles.cameraIcon}>📷</Text>
-      </TouchableOpacity>
-      <View style={styles.profileInfoContainer}>
-        <Text style={styles.profileName}>
-          {userData.name || userData.username}, {userData.age || 'N/A'}
-        </Text>
-        <Text style={styles.profileMemberSince}>
-          Member since {new Date(userData.memberSince).toLocaleDateString()}
-        </Text>
-        <TouchableOpacity
-          style={styles.editProfileButton}
-          onPress={handleEditProfile}
-        >
-          <Text style={styles.editProfileButtonText}>Edit Profile</Text>
+        <TouchableOpacity onPress={pickImage}>
+          <Image
+            source={{
+              uri: `http://192.168.10.10:3500${userData.profileImageUrl}`,
+            }}
+            style={styles.profileImage}
+            onError={(e) => {
+              console.error('Error loading image', e.nativeEvent.error);
+              Alert.alert('Error', 'Failed to load profile image');
+            }}
+            defaultSource={{ uri: 'https://via.placeholder.com/150' }} // Fallback image
+          />
+          {uploading && (
+            <View style={styles.uploadingContainer}>
+              <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+          )}
         </TouchableOpacity>
-      </View>
-      <View style={styles.verifyContainer}>
-        <Text style={styles.verifyText}>Verify your personal details</Text>
-        <Text style={styles.verifySubText}>
-          Verified users are more likely to get the property or tenant they
-          really want.
-        </Text>
-        <View style={styles.verifyIconsContainer}>
-          <Text style={styles.verifyIcon}>🔍</Text>
-          <Text style={styles.verifyIcon}>✉️</Text>
-          <Text style={styles.verifyIcon}>❤️</Text>
-          <Text style={styles.verifyIcon}>🧑‍🤝‍🧑</Text>
+        <TouchableOpacity
+          style={styles.cameraIconContainer}
+          onPress={pickImage}
+        >
+          <Text style={styles.cameraIcon}>📷</Text>
+        </TouchableOpacity>
+        <View style={styles.profileInfoContainer}>
+          <Text style={styles.profileName}>
+            {userData.name || userData.username}, {userData.age || 'N/A'}
+          </Text>
+          <Text style={styles.profileMemberSince}>
+            Member since {new Date(userData.memberSince).toLocaleDateString()}
+          </Text>
+          <TouchableOpacity
+            style={styles.editProfileButton}
+            onPress={handleEditProfile}
+          >
+            <Text style={styles.editProfileButtonText}>Edit Profile</Text>
+          </TouchableOpacity>
         </View>
-      </View>
+        <View style={styles.segmentedContainer}>
+          <Text style={styles.sectionText}>Do you have an apartment?</Text>
+          <SegmentedControl
+            values={['No', 'Yes']}
+            selectedIndex={hasApartment}
+            onChange={(e) => {
+              const selectedIndex = e.nativeEvent.selectedSegmentIndex;
+              setHasApartment(selectedIndex);
+              handleHasApartment(selectedIndex);
+            }}
+          />
+          {!hasApartment ? null : <ApartmentForm />}
+        </View>
+        <View style={{ height: 30 }} />
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -244,12 +296,12 @@ const styles = StyleSheet.create({
   },
   cameraIconContainer: {
     position: 'absolute',
-    top: 140,
-    left: '50%',
+    top: 65,
+    right: '40%',
     transform: [{ translateX: -20 }],
     backgroundColor: '#fff',
     borderRadius: 15,
-    padding: 5,
+    padding: 3,
   },
   cameraIcon: {
     fontSize: 30,
@@ -306,6 +358,18 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginTop: 20,
+  },
+  segmentedContainer: {
+    width: '60%',
+    marginTop: 20,
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+  },
+  sectionText: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });
 

@@ -12,6 +12,10 @@ import eyeHide from '../assets/icons/eye-hide.png';
 import eye from '../assets/icons/eye.png';
 import play from '../assets/icons/play.png';
 import info from '../assets/icons/info.png';
+import shabbat from '../assets/icons/shabbat.png';
+import smoker from '../assets/icons/smoker.png';
+import pet_friendly from '../assets/icons/pet_friendly.png';
+import have_home from '../assets/icons/have-home.png';
 
 export default {
   play,
@@ -28,4 +32,8 @@ export default {
   eyeHide,
   eye,
   info,
+  smoker,
+  shabbat,
+  pet_friendly,
+  have_home,
 };

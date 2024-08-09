@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
+import {
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import axios from 'axios';
 import ProfileCard from '../../components/ProfileCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import ProfileModal from '../../components/ProfileModal';
 const { width } = Dimensions.get('screen');
 
 const Home = () => {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loggedUserId, setLoggedUserId] = useState(null);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -41,11 +49,24 @@ const Home = () => {
     (profile) => profile._id !== loggedUserId
   );
 
+  const handleCardPress = (profile) => {
+    setSelectedProfile(profile);
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <Swiper
         cards={filterdProfiles}
-        renderCard={(profile) => <ProfileCard profile={profile} />}
+        renderCard={(profile) => (
+          <TouchableOpacity onPress={() => handleCardPress(profile)}>
+            <ProfileCard profile={profile} />
+          </TouchableOpacity>
+        )}
         onSwipedAll={() => console.log('No more profiles')}
         cardIndex={0}
         backgroundColor={'#f5f5f5'}
@@ -54,6 +75,13 @@ const Home = () => {
         cardVerticalMargin={width / 5}
         containerStyle={styles.swiperContainer}
       />
+      {selectedProfile && (
+        <ProfileModal
+          isModalVisible={isModalVisible}
+          onClose={closeModal}
+          profile={selectedProfile}
+        />
+      )}
     </View>
   );
 };
